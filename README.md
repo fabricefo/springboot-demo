@@ -1,3 +1,7 @@
+# Intro
+
+Starter project for SpringBoot app 
+
 # Run and Testing
 
 > ./mvnw spring-boot:run
