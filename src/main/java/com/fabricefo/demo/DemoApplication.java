@@ -22,7 +22,7 @@ public class DemoApplication {
 	}
 
 	public String getStatus() {
-		return "OK";
+		return "OK - App ready";
 	}
 
 }
