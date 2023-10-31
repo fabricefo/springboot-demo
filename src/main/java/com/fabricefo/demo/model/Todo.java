@@ -23,6 +23,12 @@ public class Todo {
         this.description=description;
     }
 
+    public Todo(long id, String title, String description) {
+        this.id = id;
+        this.title = title;
+        this.description = description;
+    }
+
     public long getId() {
         return id;
     }
