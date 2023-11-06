@@ -18,7 +18,7 @@ class DemoApplicationTests {
 
 		String result = myApp.getStatus();
 
-		assertEquals("OK", result);
+		assertEquals("OK - App ready", result);
 
 	}
 }
