@@ -18,9 +18,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 import com.fabricefo.demo.model.Todo;
 import com.fabricefo.demo.repository.TodoRepository;
 
+@Tag(name="Todo",description="Todo management API")
 @CrossOrigin(origins = "http://localhost:8081")
 @RestController
 @RequestMapping("/api")
@@ -29,6 +37,13 @@ public class TodoController {
     @Autowired
     TodoRepository todoRepository;
 
+	@Operation(summary = "Retrieve all Todos", tags = { "todos", "get", "filter" })
+	@ApiResponses({
+		@ApiResponse(responseCode = "200", content = {
+			@Content(schema = @Schema(implementation = Todo.class), mediaType = "application/json") }),
+		@ApiResponse(responseCode = "204", description = "There are no Todos", content = {
+			@Content(schema = @Schema()) }),
+		@ApiResponse(responseCode = "500", content = { @Content(schema = @Schema()) }) })
     @GetMapping("/todos")
     public ResponseEntity<List<Todo>> getAllTodos(@RequestParam(required = false) String title) {
         try {
@@ -51,6 +66,14 @@ public class TodoController {
 
     }
 
+	@Operation(
+		summary = "Retrieve a Todo by Id",
+		description = "Get a Todo object by specifying its id. The response is Todo object with id, title, description and status.",
+		tags = { "todos", "get" })
+	@ApiResponses({
+		@ApiResponse(responseCode = "200", content = { @Content(schema = @Schema(implementation = Todo.class), mediaType = "application/json") }),
+		@ApiResponse(responseCode = "404", content = { @Content(schema = @Schema()) }),
+		@ApiResponse(responseCode = "500", content = { @Content(schema = @Schema()) }) })
     @GetMapping("/todos/{id}")
 	public ResponseEntity<Todo> getTodoById(@PathVariable("id") long id) {
 		Optional<Todo> todoData = todoRepository.findById(id);
@@ -62,6 +85,11 @@ public class TodoController {
 		}
 	}
 
+	@Operation(summary = "Create a new Todo", tags = { "todos", "post" })
+	@ApiResponses({
+		@ApiResponse(responseCode = "201", content = {
+			@Content(schema = @Schema(implementation = Todo.class), mediaType = "application/json") }),
+		@ApiResponse(responseCode = "500", content = { @Content(schema = @Schema()) }) })
 	@PostMapping("/todos")
 	public ResponseEntity<Todo> createTutorial(@RequestBody Todo todo) {
 		try {
@@ -73,6 +101,12 @@ public class TodoController {
 		}
 	}
 
+	@Operation(summary = "Update a Todo by Id", tags = { "todos", "put" })
+	@ApiResponses({
+		@ApiResponse(responseCode = "200", content = {
+			@Content(schema = @Schema(implementation = Todo.class), mediaType = "application/json") }),
+		@ApiResponse(responseCode = "500", content = { @Content(schema = @Schema()) }),
+		@ApiResponse(responseCode = "404", content = { @Content(schema = @Schema()) }) })
 	@PutMapping("/todos/{id}")
 	public ResponseEntity<Todo> updateTutorial(@PathVariable("id") long id, @RequestBody Todo todo) {
 		Optional<Todo> todoData = todoRepository.findById(id);
@@ -87,6 +121,9 @@ public class TodoController {
 		}
 	}
 
+	@Operation(summary = "Delete a Todo by Id", tags = { "todos", "delete" })
+	@ApiResponses({ @ApiResponse(responseCode = "204", content = { @Content(schema = @Schema()) }),
+		@ApiResponse(responseCode = "500", content = { @Content(schema = @Schema()) }) })
 	@DeleteMapping("/todos/{id}")
 	public ResponseEntity<HttpStatus> deleteTodo(@PathVariable("id") long id) {
 		try {
@@ -97,6 +134,9 @@ public class TodoController {
 		}
 	}
 
+	@Operation(summary = "Delete all Todos", tags = { "todos", "delete" })
+	@ApiResponses({ @ApiResponse(responseCode = "204", content = { @Content(schema = @Schema()) }),
+		@ApiResponse(responseCode = "500", content = { @Content(schema = @Schema()) }) })
 	@DeleteMapping("/todos")
 	public ResponseEntity<HttpStatus> deleteAllTodos() {
 		try {
