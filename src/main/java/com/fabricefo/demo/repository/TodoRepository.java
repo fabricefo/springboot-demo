@@ -10,4 +10,6 @@ import com.fabricefo.demo.model.Todo;;
 public interface TodoRepository extends JpaRepository<Todo, Long> {
 
     List<Todo> findByTitleContaining(String title);
+    List<Todo> findTodosByTagsId(Long tagId);
+
 }

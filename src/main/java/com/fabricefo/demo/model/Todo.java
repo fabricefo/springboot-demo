@@ -1,5 +1,8 @@
 package com.fabricefo.demo.model;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -15,6 +18,11 @@ public class Todo {
 
 	@Column(name = "description")
 	private String description;
+
+    @ManyToMany(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+    @JoinTable(name = "todo_tags", joinColumns = { @JoinColumn(name = "todo_id") }, inverseJoinColumns = {
+        @JoinColumn(name = "tag_id") })
+    private Set<Tag> tags = new HashSet<>();
 
     public Todo() {}
 
@@ -47,6 +55,27 @@ public class Todo {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public Set<Tag> getTags() {
+        return tags;
+    }
+
+    public void setTags(Set<Tag> tags) {
+        this.tags = tags;
+    }
+
+    public void addTag(Tag tag) {
+        this.tags.add(tag);
+        tag.getTodos().add(this);
+    }
+
+    public void removeTag(long tagId) {
+        Tag tag = this.tags.stream().filter(t -> t.getId() == tagId).findFirst().orElse(null);
+        if (tag != null) {
+            this.tags.remove(tag);
+            tag.getTodos().remove(this);
+        }
     }
 
     @Override
